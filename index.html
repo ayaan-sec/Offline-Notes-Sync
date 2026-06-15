@@ -1,0 +1,450 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MyNotes</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #0f0f0f;
+            color: #fff;
+            padding: 20px;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 40px;
+            padding: 0 20px;
+        }
+
+        .title {
+            font-size: 48px;
+            font-weight: bold;
+            color: #fff;
+        }
+
+        .controls {
+            display: flex;
+            gap: 20px;
+            align-items: center;
+        }
+
+        .sync-btn {
+            padding: 12px 24px;
+            border: 2px solid #fff;
+            background: transparent;
+            color: #fff;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: bold;
+            border-radius: 15px;
+            transition: all 0.3s ease;
+        }
+
+        .sync-btn:hover {
+            background: #fff;
+            color: #0f0f0f;
+        }
+
+        .sync-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .status {
+            font-size: 12px;
+            font-weight: bold;
+            padding: 8px 16px;
+            border: 2px solid #fff;
+            background: transparent;
+            color: #fff;
+            border-radius: 15px;
+            display: inline-block;
+        }
+
+        .input-section {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 25px;
+            padding: 0 20px;
+        }
+
+        input[type="text"] {
+            flex: 1;
+            padding: 14px 18px;
+            border: 2px solid #fff;
+            background: transparent;
+            color: #fff;
+            font-size: 16px;
+            border-radius: 15px;
+            transition: all 0.3s ease;
+        }
+
+        input[type="text"]:focus {
+            outline: none;
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        input[type="text"]::placeholder {
+            color: #888;
+        }
+
+        .add-btn {
+            padding: 14px 32px;
+            border: 2px solid #fff;
+            background: #fff;
+            color: #0f0f0f;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: bold;
+            border-radius: 15px;
+            transition: all 0.3s ease;
+        }
+
+        .add-btn:hover {
+            background: #ddd;
+        }
+
+        .sync-section {
+            padding: 0 20px;
+            margin-bottom: 30px;
+        }
+
+        .notes-container {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 15px;
+            padding: 0 20px;
+            auto-rows: max-content;
+        }
+
+        .note {
+            background: #1f1f1f;
+            padding: 18px;
+            border: 2px solid #fff;
+            border-radius: 12px;
+            box-shadow: 2px 2px 8px rgba(0, 0, 0, 0.5);
+            transition: all 0.3s ease;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .note:hover {
+            transform: translateY(-3px);
+            box-shadow: 3px 3px 12px rgba(255, 255, 255, 0.15);
+        }
+
+        .note-text {
+            font-size: 14px;
+            line-height: 1.5;
+            color: #fff;
+            word-wrap: break-word;
+            word-break: break-word;
+            margin-bottom: 12px;
+            flex-grow: 1;
+        }
+
+        .note-delete {
+            align-self: flex-end;
+            padding: 5px 10px;
+            border: 1px solid #fff;
+            background: transparent;
+            color: #fff;
+            cursor: pointer;
+            font-size: 11px;
+            font-weight: bold;
+            border-radius: 8px;
+            transition: all 0.2s ease;
+        }
+
+        .note-delete:hover {
+            background: #fff;
+            color: #0f0f0f;
+        }
+
+        .empty {
+            grid-column: 1 / -1;
+            text-align: center;
+            padding: 60px 20px;
+            color: #555;
+            font-size: 18px;
+        }
+
+        @media (max-width: 1200px) {
+            .notes-container {
+                grid-template-columns: repeat(4, 1fr);
+            }
+        }
+
+        @media (max-width: 900px) {
+            .notes-container {
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
+
+        @media (max-width: 600px) {
+            .notes-container {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 12px;
+                padding: 0 10px;
+            }
+
+            .header {
+                padding: 0 10px;
+                margin-bottom: 25px;
+            }
+
+            .title {
+                font-size: 32px;
+            }
+
+            .input-section {
+                padding: 0 10px;
+                gap: 10px;
+                margin-bottom: 20px;
+            }
+
+            .sync-section {
+                padding: 0 10px;
+                margin-bottom: 20px;
+            }
+
+            input[type="text"] {
+                font-size: 14px;
+                padding: 12px 15px;
+            }
+
+            .add-btn {
+                padding: 12px 24px;
+                font-size: 14px;
+            }
+
+            .note {
+                padding: 14px;
+            }
+
+            .note-text {
+                font-size: 13px;
+            }
+        }
+
+        @media (max-width: 400px) {
+            .notes-container {
+                grid-template-columns: 1fr;
+            }
+
+            .title {
+                font-size: 24px;
+            }
+
+            .controls {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 10px;
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="title">MyNotes</div>
+            <div class="controls">
+                <div class="status" id="status">SYNCED</div>
+            </div>
+        </div>
+
+        <div class="input-section">
+            <input 
+                type="text" 
+                id="noteInput" 
+                placeholder="Add a note..." 
+                onkeypress="handleKeyPress(event)"
+            >
+            <button class="add-btn" onclick="addNote()">ADD</button>
+        </div>
+
+        <div class="sync-section">
+            <button class="sync-btn" id="syncBtn" onclick="syncNotes()">SYNC</button>
+        </div>
+
+        <div class="notes-container" id="notesList">
+            <div class="empty">Your notes are empty. Add one!</div>
+        </div>
+    </div>
+
+    <script>
+        const SERVER_URL = `http://${window.location.hostname}:5000`;
+        const STORAGE_KEY = 'notes_app';
+
+        let notes = {};
+        let syncStatus = 'synced';
+
+        function init() {
+            loadLocalNotes();
+            renderNotes();
+            setupOnlineOfflineHandlers();
+            checkServerConnection();
+            setInterval(autoSync, 30000);
+        }
+
+        function loadLocalNotes() {
+            const stored = localStorage.getItem(STORAGE_KEY);
+            if (stored) {
+                notes = JSON.parse(stored);
+            } else {
+                notes = {};
+            }
+        }
+
+        function saveLocalNotes() {
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(notes));
+            setSyncStatus('pending');
+        }
+
+        function addNote() {
+            const input = document.getElementById('noteInput');
+            const text = input.value.trim();
+            
+            if (!text) return;
+
+            const id = Date.now().toString();
+            notes[id] = {
+                id,
+                text,
+                created: new Date().toISOString(),
+                updated: Date.now()
+            };
+
+            saveLocalNotes();
+            input.value = '';
+            renderNotes();
+        }
+
+        function deleteNote(id) {
+            if (notes[id]) {
+                notes[id].deleted = true;
+                notes[id].deletedAt = Date.now();
+                notes[id].updated = Date.now();
+            }
+            saveLocalNotes();
+            renderNotes();
+        }
+
+        function renderNotes() {
+            const notesList = document.getElementById('notesList');
+            const activeNotes = Object.values(notes).filter(n => !n.deleted);
+            
+            if (activeNotes.length === 0) {
+                notesList.innerHTML = '<div class="empty">Your notes are empty. Add one!</div>';
+                return;
+            }
+
+            notesList.innerHTML = activeNotes
+                .reverse()
+                .map((note) => `
+                    <div class="note">
+                        <div class="note-text">${escapeHtml(note.text)}</div>
+                        <button class="note-delete" onclick="deleteNote('${note.id}')">Remove</button>
+                    </div>
+                `)
+                .join('');
+        }
+
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+
+        async function syncNotes() {
+            const syncBtn = document.getElementById('syncBtn');
+            syncBtn.disabled = true;
+
+            try {
+                const response = await fetch(`${SERVER_URL}/api/sync`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ notes })
+                });
+
+                if (response.ok) {
+                    const data = await response.json();
+                    notes = data.notes;
+                    localStorage.setItem(STORAGE_KEY, JSON.stringify(notes));
+                    setSyncStatus('synced');
+                    renderNotes();
+                }
+            } catch (error) {
+                console.error('Sync failed:', error);
+                setSyncStatus('offline');
+            } finally {
+                syncBtn.disabled = false;
+            }
+        }
+
+        async function autoSync() {
+            if (isOnline() && syncStatus === 'pending') {
+                await syncNotes();
+            }
+        }
+
+        async function checkServerConnection() {
+            try {
+                const response = await fetch(`${SERVER_URL}/api/notes`, { method: 'GET' });
+                if (response.ok) {
+                    setSyncStatus('synced');
+                } else {
+                    setSyncStatus('offline');
+                }
+            } catch {
+                setSyncStatus('offline');
+            }
+        }
+
+        function setSyncStatus(status) {
+            syncStatus = status;
+            const statusEl = document.getElementById('status');
+            statusEl.textContent = status.toUpperCase();
+        }
+
+        function isOnline() {
+            return navigator.onLine;
+        }
+
+        function handleKeyPress(event) {
+            if (event.key === 'Enter') {
+                addNote();
+            }
+        }
+
+        function setupOnlineOfflineHandlers() {
+            window.addEventListener('online', () => {
+                checkServerConnection();
+            });
+            window.addEventListener('offline', () => {
+                setSyncStatus('offline');
+            });
+        }
+
+        init();
+    </script>
+</body>
+</html>
